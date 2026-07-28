@@ -1,5 +1,5 @@
 # Git Convention
-
+ff
 이 문서는 [`.github/`](.github/) Issue·PR 템플릿과 CI를 기준으로 한 Git 작업 규칙입니다.
 
 | 경로 | 역할 |
