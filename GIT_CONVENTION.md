@@ -1,5 +1,5 @@
 # Git Convention
-ff
+
 이 문서는 [`.github/`](.github/) Issue·PR 템플릿과 CI를 기준으로 한 Git 작업 규칙입니다.
 
 | 경로 | 역할 |
@@ -88,19 +88,20 @@ Chore: test 프로필 H2 추가
 
 ## 4.1. Git Hooks (Gradle)
 
-`build.gradle`에 `com.github.jakemarsden.git-hooks`가 설정되어 있습니다. **임의의 Gradle 명령을 한 번 실행**하면 `.git/hooks`에 훅이 설치됩니다.
+훅은 **컴파일/`./gradlew` 실행 시** 설치됩니다.
 
-| Hook | 실행 | 목적 |
+| Hook | 동작 | 목적 |
 | --- | --- | --- |
-| `pre-commit` | `./gradlew compileJava` | 커밋 전 컴파일 오류 차단 |
-| `pre-push` | `./gradlew test` | push 전 CI와 동일하게 테스트 |
+| `commit-msg` | `scripts/commit-msg` → `.git/hooks/commit-msg` | 커밋 메시지 컨벤션 검증 (`Feature: ...` 등) |
+| `pre-push` | `./gradlew test` | push 직전에만 테스트 (커밋 시 빌드/테스트 없음) |
 
 ```bash
-./gradlew tasks   # 또는 ./gradlew help — 훅 설치 트리거
+./gradlew compileJava   # 또는 ./gradlew tasks — commit-msg 훅 설치 + pre-push 훅 반영
 ```
 
-- 훅을 우회해야 할 때만 `git commit --no-verify` / `git push --no-verify` (남용 금지).
-- 클론 직후 팀원은 Gradle을 한 번 돌려 훅을 설치하세요.
+- 허용 메시지: `Feature|Fix|Refactor|Style|Docs|Chore: ` 뒤에 요약 (첫 줄)
+- 우회는 `git commit --no-verify` / `git push --no-verify` (남용 금지)
+- 클론 직후 Gradle을 한 번 실행해 훅을 설치하세요
 
 ---
 

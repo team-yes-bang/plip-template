@@ -57,10 +57,42 @@ sourceSets {
 	}
 }
 
-// Git hooks: ./gradlew 실행 시 .git/hooks 에 설치됨
+// push 직전에만 테스트 (커밋 시에는 빌드/테스트 하지 않음)
 gitHooks {
 	hooks = [
-		'pre-commit': 'compileJava',
-		'pre-push'  : 'test'
+		'pre-push': 'test'
 	]
+}
+
+// commit-msg 훅 설치 (메시지 컨벤션 검증) — compileJava 시 자동 반영
+tasks.register('installGitHooks', Copy) {
+	description = 'Install commit-msg hook into .git/hooks'
+	from layout.projectDirectory.file('scripts/commit-msg')
+	into layout.projectDirectory.dir('.git/hooks')
+	filePermissions {
+		user {
+			read = true
+			write = true
+			execute = true
+		}
+		group {
+			read = true
+			execute = true
+		}
+		other {
+			read = true
+			execute = true
+		}
+	}
+	doLast {
+		// 이전 pre-commit(compileJava) 훅이 남아 있으면 제거
+		def preCommit = layout.projectDirectory.file('.git/hooks/pre-commit').asFile
+		if (preCommit.exists() && preCommit.text.contains('compileJava')) {
+			preCommit.delete()
+		}
+	}
+}
+
+tasks.named('compileJava') {
+	dependsOn 'installGitHooks'
 }

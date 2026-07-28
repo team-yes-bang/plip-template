@@ -311,7 +311,7 @@ dependencies {
 - Spring Cloud 관련 라이브러리는 이미 `dependencyManagement`에 BOM이 있으므로, 버전을 직접 적지 말고 starter 이름만 추가하는 것을 권장합니다.
 - 의존성을 추가한 뒤 IDE에서 Gradle 리로드(`Reload Gradle Project`)하고 `./gradlew build`로 확인하세요.
 - `com.sample` 샘플이 쓰는 라이브러리라고 해서 템플릿에 미리 넣을 필요는 없습니다. **본인 서비스에서 실제로 쓸 때만** 추가합니다.
-- Git hooks(`pre-commit` / `pre-push`)는 `com.github.jakemarsden.git-hooks`로 관리됩니다. 클론 후 `./gradlew tasks` 등으로 한 번 실행해 `.git/hooks`에 설치하세요. 자세한 내용은 [GIT_CONVENTION.md](GIT_CONVENTION.md)를 참고하세요.
+- Git hooks: 커밋 시 **메시지 검증만** (`scripts/commit-msg`), **테스트는 push 시** (`pre-push` → `./gradlew test`). 클론 후 `./gradlew compileJava` 등으로 한 번 실행해 훅을 설치하세요. 자세한 내용은 [GIT_CONVENTION.md](GIT_CONVENTION.md)를 참고하세요.
 
 ---
 
