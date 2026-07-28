@@ -5,6 +5,7 @@
 | 문서 | 역할 |
 | --- | --- |
 | **START.md** (본 문서) | 템플릿 적용 직후 초기 설정 |
+| [DOCKER_SETUP.md](DOCKER_SETUP.md) | 로컬 **앱+MySQL Docker Compose** 기동 |
 | [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) | 팀원용 전체 개발 규칙 (헥사고날, DB, OpenAPI, 샘플 참고) |
 | [AI_CODING_GUIDELINES.md](AI_CODING_GUIDELINES.md) | AI 에이전트용 코드 생성 제약 |
 | [GIT_CONVENTION.md](GIT_CONVENTION.md) | Issue / 브랜치 / 커밋 / PR / CI |
@@ -15,9 +16,9 @@
 
 - [ ] 1. 프로젝트 이름 및 기본 패키지명 변경 (`com.plip.template` -> `com.plip.{service}`)
 - [ ] 2. `settings.gradle` 및 `build.gradle` 설정 변경
-- [ ] 3. `application.yaml`(공통) / `application-local.yml`(로컬) 및 DB env 설정
+- [ ] 3. `application.yaml`(공통) / `application-local.yml`·`application-docker.yml` 및 DB env 설정
 - [ ] 4. OpenAPI / Swagger 문서 설정 수정
-- [ ] 5. 로컬 실행 및 API 동작 확인
+- [ ] 5. 로컬 실행 확인 ([DOCKER_SETUP.md](DOCKER_SETUP.md) 권장: `docker compose up -d --build`)
 
 ---
 
@@ -94,10 +95,11 @@ version = '0.0.1-SNAPSHOT'
 설정은 **공통 / 프로필 / 시크릿**으로 나눕니다.
 
 
-| 파일                      | 역할                                                                 |
-| ----------------------- | ------------------------------------------------------------------ |
-| `application.yaml`      | 모든 환경 공통 (앱 이름, driver, DB 계정 env 키, Eureka instance 등)            |
-| `application-local.yml` | `local` 프로필 전용 (포트, 로컬 DB URL, ddl-auto, Eureka URL)               |
+| 파일 | 역할 |
+| --- | --- |
+| `application.yaml` | 모든 환경 공통 (앱 이름, driver, DB 계정 env 키, Eureka instance 등) |
+| `application-local.yml` | `local` 프로필 — 호스트 IDE/`bootRun` (포트, localhost DB, Eureka) |
+| `application-docker.yml` | `docker` 프로필 — Compose 앱 컨테이너 (DB 호스트=`mysql`) |
 | `.env` (또는 IDE/OS 환경변수) | `DB_USERNAME`, `DB_PASSWORD`, (충돌 시) `SERVER_PORT` — **Git 커밋 금지** |
 
 
@@ -171,7 +173,8 @@ eureka:
     fetch-registry: true
 ```
 
-> Eureka는 **공통 기본값 `true`**입니다. `local` 프로필에서는 `application-local.yml`이 `false`로 덮어써서 Eureka Server 없이 기동할 수 있습니다.
+> Eureka는 **공통 기본값 `true`**입니다. `local` / `docker` 프로필에서는 각각 `application-local.yml` / `application-docker.yml`이 `false`로 덮어씁니다.  
+> **로컬 전부 Docker** 기동은 [DOCKER_SETUP.md](DOCKER_SETUP.md)를 따르세요.
 
 
 
@@ -270,14 +273,22 @@ public class SwaggerConfig {
 
 ## 5단계: 로컬 실행 및 헬스 체크
 
-모든 설정이 끝났으면 서버를 구동하여 정상 동작을 확인합니다.
+모든 설정이 끝났으면 서버를 구동하여 정상 동작을 확인합니다. **권장: Docker 전부 기동** → 상세는 [DOCKER_SETUP.md](DOCKER_SETUP.md)
 
-1. **환경변수 확인:** `DB_USERNAME`, `DB_PASSWORD`가 주입되어 있는지 확인
-2. **로컬 MySQL:** `application-local.yml`의 DB(`plip_{service}` 등)가 생성되어 있는지 확인
-3. **메인 애플리케이션 실행:** `{ServiceName}Application.java` 실행 (기본 프로필: `local`)
-4. **Swagger 접속 확인:** 브라우저에서 `http://localhost:{본인포트}/swagger-ui/index.html` 접속
-5. **API 테스트:** 본인 서비스에 구현한 엔드포인트 호출을 통해 Response(`200 OK`) 확인
-6. **(로컬 Eureka 연동 시에만)** `application-local.yml`의 `eureka.client.enabled`를 `true`로 바꾼 뒤, `http://localhost:8761` (또는 팀 공용 Eureka)에서 `Instances currently registered with Eureka`에 본인 `spring.application.name`이 노출되는지 확인합니다.
+### A) Docker (앱 + MySQL)
+
+1. `.env.example`을 복사해 `.env` 작성 (`DB_PASSWORD` 필수)
+2. `docker compose up -d --build`
+3. Swagger: `http://localhost:{SERVER_PORT}/swagger-ui/index.html`
+4. API 호출로 `200 OK` 확인
+
+### B) 호스트 직접 실행 (IDE / bootRun)
+
+1. **환경변수 확인:** `DB_USERNAME`, `DB_PASSWORD` 주입
+2. **로컬 MySQL:** `application-local.yml`의 DB(`plip_{service}` 등) 생성
+3. **메인 애플리케이션 실행:** `{ServiceName}Application.java` (프로필: `local`)
+4. **Swagger / API** 확인
+5. **(Eureka 연동 시에만)** `application-local.yml`에서 `eureka.client.enabled=true` 후 대시보드 확인
 
 ---
 
