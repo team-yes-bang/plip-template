@@ -1,0 +1,10 @@
+openapi: 3.1.0
+info:
+  title: PLIP Template Service API
+  description: 서비스 API 명세서
+  version: v1.0.0
+servers:
+- url: http://localhost
+  description: Generated server url
+paths: {}
+components: {}
