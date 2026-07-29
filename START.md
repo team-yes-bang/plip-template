@@ -127,10 +127,7 @@ version = '0.0.1-SNAPSHOT'
 
 | 서비스명                | 담당자 | 로컬 포트 (`server.port`) |
 | ------------------- | --- | --------------------- |
-| **Gateway Service** | 공통  | `8080`                |
-| **User Service**    | 이영희 | `8081`                |
-| **Agit Service**    | 김철수 | `8082`                |
-| **Media Service**   | 박민수 | `8083`                |
+| **Gateway Service** | 공통  | `8000`                |
 
 
 **포트가 이미 사용 중이면 (충돌 시)**
@@ -182,7 +179,7 @@ eureka:
 
 ```yaml
 server:
-  port: ${SERVER_PORT:8082} # 👈 팀 할당 포트를 기본값으로. 충돌 시 SERVER_PORT env로 오버라이드
+  port: ${SERVER_PORT} # 포트는 env에서 관리, 혹은 env를 사용하지 않을 때 ${SERVER_PORT:8081} 등으로 
 
 spring:
   datasource:
