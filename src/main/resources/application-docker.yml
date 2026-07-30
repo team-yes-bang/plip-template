@@ -11,7 +11,12 @@ spring:
     show-sql: true
 
 eureka:
+  instance:
+    # plip-net Compose DNS — Gateway 컨테이너에서 template:8080 으로 접근
+    hostname: template
+    prefer-ip-address: false
+    instance-id: ${spring.application.name}:docker:${server.port}
   client:
-    enabled: true # Docker 로컬 기본 비활성. 연동 시 true + Eureka 서비스 추가
+    enabled: true
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://eureka-server:8761/eureka/}
