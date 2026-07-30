@@ -16,6 +16,6 @@ eureka:
     prefer-ip-address: false
     hostname: localhost
   client:
-    enabled: true # 로컬 기본 비활성. Eureka 연동 시 true로 변경
+    enabled: false # Develop PC Docker Eureka 오염 방지. 연동 테스트 시에만 true
     service-url:
       defaultZone: http://localhost:8761/eureka/
