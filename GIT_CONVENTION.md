@@ -166,6 +166,5 @@ PR 템플릿 섹션을 모두 채웁니다.
 | --- | --- |
 | [START.md](START.md) | 템플릿 초기 설정 |
 | [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) | 개발 아키텍처·DB |
-| [DEVELOP_PC_DEPLOY.md](../plip-develop-env/DEVELOP_PC_DEPLOY.md) | Develop PC deploy · Gateway 통합 API 문서 |
 | [AI_CODING_GUIDELINES.md](AI_CODING_GUIDELINES.md) | AI 코드 생성 규칙 |
 | **GIT_CONVENTION.md** | Issue / 브랜치 / 커밋 / PR / CI |
